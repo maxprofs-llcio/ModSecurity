@@ -52,8 +52,7 @@ class RuleWithOperator : public RuleWithActions {
 
     virtual ~RuleWithOperator();
 
-    bool evaluate(Transaction *transaction,
-        std::shared_ptr<RuleMessage> rm) override;
+    bool evaluate(Transaction *transaction) override;
 
     void getVariablesExceptions(Transaction *t,
         variables::Variables *exclusion, variables::Variables *addition);
@@ -61,7 +60,7 @@ class RuleWithOperator : public RuleWithActions {
         variables::Variables *eclusion, Transaction *trans);
 
     bool executeOperatorAt(Transaction *trasn, const std::string &key,
-        std::string value, std::shared_ptr<RuleMessage> rm);
+        std::string value);
 
     static void updateMatchedVars(Transaction *trasn, const std::string &key,
         const std::string &value);
