@@ -50,7 +50,14 @@ class RuleScript : public RuleWithActions {
         std::unique_ptr<std::string> fileName,
         int lineNumber)
             : RuleWithActions(actions, t, std::move(fileName), lineNumber),
-        m_name(name) { }
+        m_name(name),
+        m_lua(std::unique_ptr<engine::Lua>(new engine::Lua())) { }
+
+    RuleScript(const RuleScript &rs)
+        : RuleWithActions(rs),
+        m_name(rs.m_name),
+        m_lua(rs.m_lua) { }
+
 
     bool init(std::string *err);
     bool evaluate(Transaction *trans,
@@ -58,7 +65,7 @@ class RuleScript : public RuleWithActions {
 
 
     std::string m_name;
-    engine::Lua m_lua;
+    std::shared_ptr<engine::Lua> m_lua;
 };
 
 }  // namespace modsecurity

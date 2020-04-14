@@ -56,6 +56,13 @@ class Action {
             set_name_and_payload(_action);
         }
 
+    Action(const Action &a)
+        : m_isNone(a.m_isNone),
+        temporaryAction(a.temporaryAction),
+        action_kind(a.action_kind),
+        m_name(a.m_name),
+        m_parser_payload(a.m_parser_payload) { }
+
     virtual ~Action() { }
 
     virtual std::string evaluate(const std::string &exp,

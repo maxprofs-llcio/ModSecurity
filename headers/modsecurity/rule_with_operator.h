@@ -45,6 +45,11 @@ class RuleWithOperator : public RuleWithActions {
         std::unique_ptr<std::string> fileName,
         int lineNumber);
 
+    RuleWithOperator(const RuleWithOperator &op)
+        : RuleWithActions(op),
+        m_variables(op.m_variables),
+        m_operator(op.m_operator) { };
+
     virtual ~RuleWithOperator();
 
     bool evaluate(Transaction *transaction,
@@ -70,8 +75,8 @@ class RuleWithOperator : public RuleWithActions {
     }
 
  private:
-    modsecurity::variables::Variables *m_variables;
-    operators::Operator *m_operator;
+    std::shared_ptr<modsecurity::variables::Variables> m_variables;
+    std::shared_ptr<operators::Operator> m_operator;
 };
 
 

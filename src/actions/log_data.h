@@ -44,7 +44,7 @@ class LogData : public Action {
 
     std::string data(Transaction *Transaction);
 
-    std::unique_ptr<RunTimeString> m_string;
+    std::shared_ptr<RunTimeString> m_string;
 };
 
 

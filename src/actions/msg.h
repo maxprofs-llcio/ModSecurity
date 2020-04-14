@@ -44,7 +44,7 @@ class Msg : public Action {
         std::shared_ptr<RuleMessage> rm) override;
 
     std::string data(Transaction *Transaction);
-    std::unique_ptr<RunTimeString> m_string;
+    std::shared_ptr<RunTimeString> m_string;
 };
 
 

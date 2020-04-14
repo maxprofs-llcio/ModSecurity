@@ -19,7 +19,7 @@
 namespace modsecurity {
 
 bool RuleScript::init(std::string *err) {
-    return m_lua.load(m_name, err);
+    return m_lua->load(m_name, err);
 }
 
 bool RuleScript::evaluate(Transaction *trans,
@@ -32,7 +32,7 @@ bool RuleScript::evaluate(Transaction *trans,
     executeActionsIndependentOfChainedRuleResult(trans,
         &containsDisruptive, ruleMessage);
 
-    bool ret = m_lua.run(trans);
+    bool ret = m_lua->run(trans);
 
     if (ret) {
         executeActionsAfterFullMatch(trans, containsDisruptive, ruleMessage);

@@ -42,7 +42,7 @@ class Tag : public Action {
         std::shared_ptr<RuleMessage> rm) override;
 
  protected:
-    std::unique_ptr<RunTimeString> m_string;
+    std::shared_ptr<RunTimeString> m_string;
 };
 
 
