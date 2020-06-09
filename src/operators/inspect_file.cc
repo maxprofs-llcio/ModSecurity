@@ -16,6 +16,10 @@
 #include "src/operators/inspect_file.h"
 
 #include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include <string>
 #include <iostream>
@@ -49,37 +53,91 @@ bool InspectFile::init(const std::string &param2, std::string *error) {
 }
 
 
-bool InspectFile::evaluate(Transaction *transaction, const std::string &str) {
+bool InspectFile::evaluate(Transaction *transaction,
+    const std::string &parameters) {
+    /**
+     *  FIXME: This kind of external execution could be part of the utils.
+     *         (a) External execution is also expected by exec action.
+     *         (b) One day, this should be workable on windows as well.
+     *         (c) Audit log may depend on external execution.
+     *
+     **/
     if (m_isScript) {
-        return m_lua.run(transaction, str);
-    } else {
-        FILE *in;
-        char buff[512];
-        std::stringstream s;
-        std::string res;
-        std::string openstr;
+        return m_lua.run(transaction, parameters);
+    }
 
-        openstr.append(m_param);
-        openstr.append(" ");
-        openstr.append(str);
-        if (!(in = popen(openstr.c_str(), "r"))) {
+    std::string command(m_param);
+    std::string commandWithParameters(command + " " + parameters);
+
+    ms_dbg_a(transaction, 8, "Executing: " + command + \
+        ". With parameters: " + parameters);
+
+
+    int ret = access(command.c_str(), F_OK);
+    if (ret != 0) {
+        if (errno == ENOENT) {
+            ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+                ". File not found.");
             return false;
         }
 
-        while (fgets(buff, sizeof(buff), in) != NULL) {
-            s << buff;
+        if (errno == EACCES) {
+            ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+                ". Permission denied.");
+            return false;
         }
 
-        pclose(in);
-
-        res.append(s.str());
-        if (res.size() > 1 && res.at(0) != '1') {
-            return true; /* match */
-        }
-
-        /* no match */
+        ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+            ". " + strerror(errno));
         return false;
     }
+
+    ret = access(command.c_str(), X_OK);
+    if (ret != 0) {
+        if (errno == ENOENT) {
+            ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+                ". File not found.");
+            return false;
+        }
+
+        if (errno == EACCES) {
+            ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+                ". Permission denied.");
+            return false;
+        }
+
+        ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+            ". " + strerror(errno));
+        return false;
+    }
+
+    FILE *in = popen(commandWithParameters.c_str(), "r");
+    if (in == NULL) {
+        ms_dbg_a(transaction, 8, "Failed to execute: " + command + \
+            ". " + strerror(errno));
+        return false;
+    }
+
+    std::stringstream s;
+    char buff[512];
+    while (fgets(buff, sizeof(buff), in) != NULL) {
+        s << buff;
+    }
+
+    if (pclose(in) == -1) {
+        ms_dbg_a(transaction, 8, "Failed during the execute of: " + command + \
+            ". " + strerror(errno));
+    }
+
+    std::string res = s.str();
+    ms_dbg_a(transaction, 8, "Process output: " + res);
+
+    if (res.size() > 1 && res.at(0) != '1') {
+        return true; /* match */
+    }
+
+    /* no match */
+    return false;
 }
 
 

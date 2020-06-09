@@ -40,7 +40,121 @@
   {
     "enabled":1,
     "version_min":300000,
-    "title":"Testing Operator :: @inspectFile (2/3)",
+    "title":"Testing Operator :: @inspectFile (2/n)",
+    "client":{
+      "ip":"200.249.12.31",
+      "port":123
+    },
+    "server":{
+      "ip":"200.249.12.31",
+      "port":80
+    },
+    "request":{
+      "headers":{
+        "Host":"localhost",
+        "User-Agent":"curl/7.38.0",
+        "Accept":"*/*",
+        "Content-Length": "27",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "uri":"/whee?res=1",
+      "method":"GET",
+      "body": [ ]
+    },
+    "response":{
+      "headers":{},
+      "body":[
+        "no need."
+      ]
+    },
+    "expected":{
+      "parser_error":"Failed to open file: /bin/thereisnothingtobeexecuted"
+    },
+    "rules":[
+      "SecRuleEngine On",
+      "SecRule ARGS:res \"@inspectFile /bin/thereisnothingtobeexecuted\" \"id:1,phase:2,pass,t:trim\""
+    ]
+  },
+  {
+    "enabled":1,
+    "version_min":300000,
+    "title":"Testing Operator :: @inspectFile (3/n)",
+    "client":{
+      "ip":"200.249.12.31",
+      "port":123
+    },
+    "server":{
+      "ip":"200.249.12.31",
+      "port":80
+    },
+    "request":{
+      "headers":{
+        "Host":"localhost",
+        "User-Agent":"curl/7.38.0",
+        "Accept":"*/*",
+        "Content-Length": "27",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "uri":"/whee?res=1",
+      "method":"GET",
+      "body": [ ]
+    },
+    "response":{
+      "headers":{},
+      "body":[
+        "no need."
+      ]
+    },
+    "expected":{
+      "debug_log":"Process output: Oi"
+    },
+    "rules":[
+      "SecRuleEngine On",
+      "SecRule ARGS:res \"@inspectFile test-cases/data/test.sh\" \"id:1,phase:2,pass,t:trim\""
+    ]
+  },
+  {
+    "enabled":1,
+    "version_min":300000,
+    "title":"Testing Operator :: @inspectFile (4/n)",
+    "client":{
+      "ip":"200.249.12.31",
+      "port":123
+    },
+    "server":{
+      "ip":"200.249.12.31",
+      "port":80
+    },
+    "request":{
+      "headers":{
+        "Host":"localhost",
+        "User-Agent":"curl/7.38.0",
+        "Accept":"*/*",
+        "Content-Length": "27",
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "uri":"/whee?res=Oi",
+      "method":"GET",
+      "body": [ ]
+    },
+    "response":{
+      "headers":{},
+      "body":[
+        "no need."
+      ]
+    },
+    "expected":{
+      "debug_log":"Failed to execute: test-cases/data/test-ops.sh. Permission denied."
+    },
+    "rules":[
+      "SecRuleEngine On",
+      "SecRule ARGS:res \"@inspectFile test-cases/data/test-ops.sh\" \"id:1,phase:2,pass,t:trim\""
+    ]
+  },
+  {
+    "enabled":1,
+    "version_min":300000,
+    "title":"Testing Operator :: @inspectFile (5/n)",
     "client":{
       "ip":"200.249.12.31",
       "port":123
@@ -78,7 +192,7 @@
   {
     "enabled":1,
     "version_min":300000,
-    "title":"Testing Operator :: @inspectFile (3/3)",
+    "title":"Testing Operator :: @inspectFile (6/n)",
     "client":{
       "ip":"200.249.12.31",
       "port":123
